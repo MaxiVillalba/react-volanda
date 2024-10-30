@@ -30,7 +30,7 @@ const NavBar = () => {
               <Link className="nav-link" to="/category/paquetes">Paquetes</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link disabled" aria-disabled="true" to="/category/promociones">Promociones</Link>
+              <Link className="nav-link" /* Link className="nav-link disabled" aria-disabled="true" (acá y asi para deshabilitar)*/ to="/category/promociones">Promociones</Link>
             </li>
           </ul>
         </div>
