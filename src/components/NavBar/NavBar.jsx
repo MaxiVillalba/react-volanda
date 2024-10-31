@@ -1,6 +1,7 @@
 import CartWidget from "./CartWidget";
 import "./navbar.scss";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import "./navbar.scss"
 
 const NavBar = () => {
   return (
@@ -21,7 +22,7 @@ const NavBar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+              <NavLink className={({isActive}) => (isActive ? "active-link" : "" )} aria-current="page" to="/">Home</NavLink>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/category/destinos">Destinos</Link>
