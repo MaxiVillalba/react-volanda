@@ -1,11 +1,10 @@
 import CartWidget from "./CartWidget";
 import "./navbar.scss";
 import { Link, NavLink } from "react-router-dom";
-import "./navbar.scss"
 
-const NavBar = () => {
+const NavBar = ({ className }) => {
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
+    <nav className={`navbar navbar-expand-lg ${className}`}>
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">Volanda</Link>
         <button
@@ -22,7 +21,7 @@ const NavBar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <NavLink className={({isActive}) => (isActive ? "active-link" : "" )} aria-current="page" to="/">Home</NavLink>
+              <NavLink className={({ isActive }) => (isActive ? "active-link" : "")} aria-current="page" to="/">Home</NavLink>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/category/destinos">Destinos</Link>
@@ -31,7 +30,7 @@ const NavBar = () => {
               <Link className="nav-link" to="/category/paquetes">Paquetes</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" /* Link className="nav-link disabled" aria-disabled="true" (acá y asi para deshabilitar)*/ to="/category/promociones">Promociones</Link>
+              <Link className="nav-link" to="/category/promociones">Promociones</Link>
             </li>
           </ul>
         </div>
