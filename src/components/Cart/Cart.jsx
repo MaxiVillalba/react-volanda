@@ -3,7 +3,7 @@ import { CartContext } from "./CartContext";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
-  const { cart, totalPrice, removeItem } = useContext(CartContext); // Accede al carrito y funciones
+  const { cart, totalPrice, removeItem, clearCart } = useContext(CartContext);
 
   return (
     <div className="cart-container">
@@ -13,23 +13,26 @@ const Cart = () => {
           El carrito está vacío. <Link to="/">Volver a la tienda</Link>
         </p>
       ) : (
-        <div>
-          {cart.map((item) => (
-            <div key={item.id} className="cart-item">
-              <img src={item.image} alt={item.name} width="50" />
+        <>
+          {cart.map(({ id, name, price, quantity, image }) => (
+            <div key={id} className="cart-item">
+              <img src={image} alt={name} width="50" />
               <div>
-                <h4>{item.name}</h4>
-                <p>Cantidad: {item.quantity}</p>
-                <p>Precio: ${item.price}</p>
-                <button onClick={() => removeItem(item.id)}>Eliminar</button>
+                <h4>{name}</h4>
+                <p>Cantidad: {quantity}</p>
+                <p>Precio: ${price}</p>
+                <button onClick={() => removeItem(id)}>Eliminar</button>
               </div>
             </div>
           ))}
           <h2>Total: ${totalPrice()}</h2>
-          <Link to="/checkout">
-            <button>Ir al Checkout</button>
-          </Link>
-        </div>
+          <div className="cart-actions">
+            <button onClick={clearCart}>Vaciar Carrito</button>
+            <Link to="/checkout">
+              <button>Ir al Checkout</button>
+            </Link>
+          </div>
+        </>
       )}
     </div>
   );

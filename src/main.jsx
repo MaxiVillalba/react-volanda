@@ -6,7 +6,7 @@ import "./index.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <CartProvider> {/* Envuelve App con CartProvider */}
+    <CartProvider>
       <App />
     </CartProvider>
   </StrictMode>
