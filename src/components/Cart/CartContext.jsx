@@ -7,17 +7,31 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product) => {
     setCart((prevCart) => {
-      const existingProduct = prevCart.find((item) => item.id === product.id);
-      if (existingProduct) {
-        return prevCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + product.quantity }
-            : item
-        );
+      const existingProduct = prevCart.find(item => item.id === product.id);
+      if (!existingProduct) {
+        return [...prevCart, { ...product, quantity: product.quantity }];
       }
-      return [...prevCart, product];
+      const newQuantity = existingProduct.quantity + product.quantity;
+      if (newQuantity > product.stock) {
+        alert(`Quedan ${product.stock} unidades de ${product.name}`);
+        return prevCart;
+      }
+      return prevCart.map((item) => 
+        item.id === product.id ? { ...item, quantity: newQuantity } : item
+      );
     });
   };
+  
+  const processPurchase = () => {
+    cart.forEach((item) => {
+      const productIndex = products.findIndex((p) => p.id === item.id);
+      if (productIndex !== -1) {
+        products[productIndex].stock -= item.quantity;
+      }
+    });
+    clearCart(); // 
+  };
+  
 
   const removeItem = (id) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));

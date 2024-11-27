@@ -1,10 +1,11 @@
 import { useState, useContext } from "react";
 import { CartContext } from "../Cart/CartContext";
-import { Timestamp, addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { Timestamp, addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import db from "../../db/db";
-import { Link, useNavigate } from "react-router-dom"; // Importar useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import validateForm from "../../utils/ValidateForm";
 import { toast } from "react-toastify";
+import FormCheckout from "./FormCheckout";
 
 const Checkout = () => {
   const [dataForm, setDataForm] = useState({
@@ -14,18 +15,18 @@ const Checkout = () => {
   });
   const [idOrder, setIdOrder] = useState(null);
   const { cart, totalPrice, deleteCart } = useContext(CartContext);
-  const navigate = useNavigate(); // Hook para redirección
+  const navigate = useNavigate();
 
-  const handleChangeInput = (event) => {
-    setDataForm({ ...dataForm, [event.target.name]: event.target.value });
+  const handleChangeInput = ({ target: { name, value } }) => {
+    setDataForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmitForm = async (event) => {
     event.preventDefault();
 
     const order = {
-      buyer: { ...dataForm },
-      products: [...cart],
+      buyer: dataForm,
+      products: cart,
       date: Timestamp.fromDate(new Date()),
       total: totalPrice(),
     };
@@ -39,40 +40,37 @@ const Checkout = () => {
       const responseDoc = await addDoc(ordersRef, order);
 
       setIdOrder(responseDoc.id);
-      updateStock();
+      await updateStock();
+      deleteCart();
 
-      setTimeout(() => {
-        navigate("/"); // Redirige al usuario después de unos segundos
-      }, 5000);
-
+      setTimeout(() => navigate("/"), 5000);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(`Error: ${error.message}`);
     }
   };
 
-  const updateStock = () => {
-    cart.forEach(({ id, quantity, ...dataProduct }) => {
+  const updateStock = async () => {
+    const batchUpdates = cart.map(async ({ id, quantity, stock }) => {
       const productRef = doc(db, "products", id);
-      setDoc(productRef, { ...dataProduct, stock: dataProduct.stock - quantity });
+      await updateDoc(productRef, { stock: stock - quantity });
     });
-
-    deleteCart();
+    await Promise.all(batchUpdates);
   };
 
   return (
     <div>
-      {idOrder === null ? (
+      {idOrder ? (
+        <div>
+          <h2>¡Su orden se subió correctamente! 😁</h2>
+          <p>Por favor guarde su número de seguimiento: {idOrder}</p>
+          <Link to="/">Volver al inicio</Link>
+        </div>
+      ) : (
         <FormCheckout
           dataForm={dataForm}
           handleChangeInput={handleChangeInput}
           handleSubmitForm={handleSubmitForm}
         />
-      ) : (
-        <div>
-          <h2>¡Su orden se subió correctamente! 😁</h2>
-          <p>Por favor guarde su nro de seguimiento: {idOrder}</p>
-          <Link to="/">Volver al inicio</Link>
-        </div>
       )}
     </div>
   );

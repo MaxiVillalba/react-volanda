@@ -7,51 +7,54 @@ import db from '../../db/db.js';
 
 const ItemListContainer = ({ greetings }) => {
   const { categoryName } = useParams();
-  const [allProducts, setAllProducts] = useState([]); // Estado para los productos
+  const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Función para obtener los productos de Firebase, filtrados por categoría si aplica
+  // Obtener productos desde Firebase
   const getProducts = async () => {
-    const productsRef = collection(db, "products"); // Referencia a la colección de productos
+    setLoading(true);
     try {
-      let queryRef = productsRef;
-      
-      // Si hay una categoría seleccionada, aplicamos el filtro
-      if (categoryName) {
-        queryRef = query(productsRef, where("category", "==", categoryName));
-      }
-      
-      const dataDb = await getDocs(queryRef); // Obtener documentos de la colección o consulta filtrada
+      const productsRef = collection(db, "products");
+      let queryRef = categoryName 
+        ? query(productsRef, where("category", "==", categoryName)) 
+        : productsRef;
+
+      const dataDb = await getDocs(queryRef);
       const productsArray = dataDb.docs.map(doc => ({
-        id: doc.id, // Incluye el id de cada documento
-        ...doc.data() // Extrae los datos del documento
+        id: doc.id,
+        ...doc.data(),
       }));
-      
-      setAllProducts(productsArray); // Guarda los productos en el estado
+      setAllProducts(productsArray);
     } catch (error) {
       console.error("Error al obtener productos:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Llama a getProducts cuando el componente se monta o cambia la categoría
   useEffect(() => {
     getProducts();
-  }, [categoryName]); // Ejecuta cada vez que cambia categoryName
+  }, [categoryName]);
 
   return (
     <div>
       <h2>{greetings}</h2>
-      <div className="card-group">
-        {allProducts.map((item) => (
-          <Cards
-            key={item.id}
-            id={item.id}
-            title={item.title}
-            text={item.text}
-            image={item.image}
-            price={item.price}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <p>Cargando productos...</p>
+      ) : (
+        <div className="card-group">
+          {allProducts.map(item => (
+            <Cards
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              text={item.text}
+              image={item.image}
+              price={item.price}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
