@@ -14,20 +14,18 @@ const Cart = () => {
         </p>
       ) : (
         <>
-          {cart.map(({ id, name, price, quantity, image }) => (
+          {cart.map(({ id, name, price, quantity, stock }) => (
             <div key={id} className="cart-item">
-              <img src={image} alt={name} width="50" />
-              <div>
-                <h4>{name}</h4>
-                <p>Cantidad: {quantity}</p>
-                <p>Precio: ${price}</p>
-                <p>Stock restante: {stock - quantity}</p>
-                <button onClick={() => removeItem(id)}>Eliminar</button>
-              </div>
+              <h4>{name}</h4>
+              <p>Cantidad seleccionada: {quantity}</p>
+              <p>Stock restante: {stock - quantity}</p>
+              <p>Precio por unidad: ${price}</p>
+              <p>Total: ${price * quantity}</p>
+              <button onClick={() => removeItem(id)}>Eliminar</button>
             </div>
           ))}
-          <h2>Total: ${totalPrice()}</h2>
-          <div className="cart-actions">
+          <h2>Total del carrito: ${totalPrice()}</h2>
+          <div>
             <button onClick={clearCart}>Vaciar Carrito</button>
             <Link to="/checkout">
               <button>Ir al Checkout</button>

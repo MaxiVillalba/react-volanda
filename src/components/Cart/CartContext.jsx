@@ -1,37 +1,38 @@
 import React, { createContext, useState } from "react";
 
-export const CartContext = createContext();
+// Crear el contexto
+const CartContext = createContext();
 
-export const CartProvider = ({ children }) => {
+// Crear el proveedor del contexto
+const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
   const addToCart = (product) => {
     setCart((prevCart) => {
-      const existingProduct = prevCart.find(item => item.id === product.id);
+      const existingProduct = prevCart.find((item) => item.id === product.id);
+
       if (!existingProduct) {
-        return [...prevCart, { ...product, quantity: product.quantity }];
+        if (product.quantity > product.stock) {
+          alert(`Solo hay ${product.stock} unidades disponibles.`);
+          return prevCart;
+        }
+        return [...prevCart, { ...product }];
       }
+
       const newQuantity = existingProduct.quantity + product.quantity;
+
       if (newQuantity > product.stock) {
-        alert(`Quedan ${product.stock} unidades de ${product.name}`);
+        alert(`No puedes añadir más de ${product.stock} unidades.`);
         return prevCart;
       }
-      return prevCart.map((item) => 
-        item.id === product.id ? { ...item, quantity: newQuantity } : item
+
+      return prevCart.map((item) =>
+        item.id === product.id
+          ? { ...item, quantity: newQuantity }
+          : item
       );
     });
   };
-  
-  const processPurchase = () => {
-    cart.forEach((item) => {
-      const productIndex = products.findIndex((p) => p.id === item.id);
-      if (productIndex !== -1) {
-        products[productIndex].stock -= item.quantity;
-      }
-    });
-    clearCart(); // 
-  };
-  
 
   const removeItem = (id) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
@@ -47,9 +48,19 @@ export const CartProvider = ({ children }) => {
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeItem, clearCart, totalPrice, totalItems }}
+      value={{
+        cart,
+        addToCart,
+        removeItem,
+        clearCart,
+        totalPrice,
+        totalItems,
+      }}
     >
       {children}
     </CartContext.Provider>
   );
 };
+
+// Exportar como un objeto para garantizar consistencia
+export { CartContext, CartProvider };

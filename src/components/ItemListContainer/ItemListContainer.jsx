@@ -10,7 +10,6 @@ const ItemListContainer = ({ greetings }) => {
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Obtener productos desde Firebase
   const getProducts = async () => {
     setLoading(true);
     try {
@@ -51,6 +50,7 @@ const ItemListContainer = ({ greetings }) => {
               text={item.text}
               image={item.image}
               price={item.price}
+              stock={item.stock}
             />
           ))}
         </div>
