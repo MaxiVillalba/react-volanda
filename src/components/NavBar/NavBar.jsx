@@ -21,7 +21,7 @@ const NavBar = ({ className }) => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <NavLink className={({ isActive }) => (isActive ? "active-link" : "")} aria-current="page" to="/">Home</NavLink>
+              <NavLink className="nav-link" to="/">Home</NavLink>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/category/destinos">Destinos</Link>

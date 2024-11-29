@@ -35,12 +35,13 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="*" element={<div>Error 404 - Página no encontrada</div>} />
         </Routes>
+        <Carousel className={isDarkMode ? "dark-mode" : ""} />
 
-        <Banner
+        {/* <Banner
           imageSrc="https://images.unsplash.com/photo-1496602910407-bacda74a0fe4?q=80&w=2012&auto=format&fit=crop"
           altText="Viaja con Volanda, Viaja a tus vacaciones"
           className={isDarkMode ? "dark-mode" : ""}
-        />
+        /> */}
       </div>
     </Router>
   );

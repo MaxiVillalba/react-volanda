@@ -1,9 +1,7 @@
 import React, { createContext, useState } from "react";
 
-// Crear el contexto
 const CartContext = createContext();
 
-// Crear el proveedor del contexto
 const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
@@ -62,5 +60,4 @@ const CartProvider = ({ children }) => {
   );
 };
 
-// Exportar como un objeto para garantizar consistencia
 export { CartContext, CartProvider };
